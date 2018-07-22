@@ -1,0 +1,1 @@
+i3-msg 'exec --no-startup-id urxvt -name scratchpad'

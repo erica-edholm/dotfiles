@@ -1,0 +1,38 @@
+zmodules=(directory environment fasd history input utility custom \
+          syntax-highlighting history-substring-search prompt completion)
+
+source ~/.zim/minimal/minimal.zsh
+zprompt_theme='minimal2'
+zhighlighters=(main brackets)
+
+#zssh_ids=(home github digit cloudatcost aur)
+
+eval $(dircolors ~/.dircolors)
+
+# Expand .. to ../
+zstyle ':completion:*' special-dirs true
+
+# Emacs mode
+bindkey -e
+
+# Make alt-backspace behave
+autoload -U select-word-style
+select-word-style bash
+
+# Inserts 'sudo ' at the beginning of the line.
+# If current line is empty, insert sudo for the previous command.
+function prepend-sudo() {
+  if [[ -z "$BUFFER" ]]; then
+    (( HISTNO -= 1 ))
+  fi
+  if [[ "$BUFFER" != su(do|)\ * ]]; then
+    BUFFER="sudo $BUFFER"
+    (( CURSOR += 5 ))
+  fi
+}
+zle -N prepend-sudo
+bindkey "^[s" prepend-sudo
+
+#eval "$(fasd --init auto)"
+
+alias ifind="find ./ -iname"
