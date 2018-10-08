@@ -44,8 +44,8 @@ interval=30
 
 [wifi]
 label=
-instance=wlp2s0
-command=/usr/lib/i3blocks/wifi
+instance=wlp59s0
+command=~/.config/i3blocks/wifi
 interval=10
 
 [battery]
@@ -54,8 +54,8 @@ interval=60
 
 [volume]
 label=
+instance=Master
 command=/usr/lib/i3blocks/volume
-instance=PCM
 interval=1
 
 [time]
