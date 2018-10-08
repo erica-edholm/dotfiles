@@ -1,13 +1,17 @@
 #!/usr/bin/env bash
 
+set +x 
+
 FULL_TEXT=""
 SHORT_TEXT=""
 COLOR=""
 COLOR_GREEN="#00B200"
+COLOR_LIGHT_ORANGE="#ffa500"
 COLOR_ORANGE="#f66a35"
+COLOR_RED="#ff0000"
 
 # Fetch battery stats
-BATTERY=${INSTANCE_ID:-0}
+BATTERY=${INSTANCE_ID:0}
 BATTERY_INFO=$(acpi -b | grep "Battery ${BATTERY}")
 BATTERY_STATUS=$(echo "${BATTERY_INFO}" | grep -wo "Full\|Charging\|Discharging")
 BATTERY_LEVEL=$(echo "${BATTERY_INFO}" | grep -o '[0-9]\+%' | tr -d '%')
@@ -35,18 +39,22 @@ elif [[ ${BATTERY_LEVEL} -ge 75 ]]; then
   FULL_TEXT=${BATLVLI_EXCELLENT}
   SHORT_TEXT=${BATLVLI_EXCELLENT}
   COLOR=${COLOR_GREEN}
-elif [[ ${BATTERY_LEVEL} -ge 50 ]]; then
+elif [[ ${BATTERY_LEVEL} -ge 30 ]]; then
   FULL_TEXT=${BATLVLI_GOOD}
   SHORT_TEXT=${BATLVLI_GOOD}
   COLOR=${COLOR_GREEN}
 elif [[ ${BATTERY_LEVEL} -ge 25 ]]; then
   FULL_TEXT=${BATLVLI_BAD}
   SHORT_TEXT=${BATLVLI_BAD}
-  COLOR=${COLOR_ORANGE}
-elif [[ ${BATTERY_LEVEL} -gt 10 ]]; then
+  COLOR=${COLOR_LIGHT_ORANGE}
+elif [[ ${BATTERY_LEVEL} -ge 10 ]]; then
   FULL_TEXT=${BATLVLI_CRITICAL}
   SHORT_TEXT=${BATLVLI_CRITICAL}
-  COLOR="#cccccc"
+  COLOR=${COLOR_ORANGE}
+elif [[ ${BATTERY_LEVEL} -lt 10 ]]; then
+  FULL_TEXT=${BATLVLI_CRITICAL}
+  SHORT_TEXT=${BATLVLI_CRITICAL}
+  COLOR=${COLOR_RED}
 else
   exit 33
 fi
@@ -56,7 +64,7 @@ if [[ ${BATTERY_STATUS} == "Charging" || ${ADAPTER_STATUS} == "on-line" ]]; then
   SHORT_TEXT+=${BAT_CHARGING}
 fi
 
-echo ${FULL_TEXT}
-echo ${SHORT_TEXT}
+echo ${FULL_TEXT} ${BATTERY_LEVEL}"%"
+echo ${SHORT_TEXT} ${BATTERY_LEVEL}"%"
 echo ${COLOR}
 exit 0
