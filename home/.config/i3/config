@@ -1,14 +1,18 @@
-# vim: set foldmarker={,} foldlevel=1 foldmethod=marker:
 # i3 config file (v4)
 #
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
 set $mod Mod4
 
+set $DISPLAY1 DP1-2
+set $DISPLAY2 DP2-2
+
 # Font {
 #font xft:Source Code Pro for Poweline Regular 6
 #font xft:Droid Sans Mono 6
 font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
+font pango:InputMono 11
+font pango:Awesome 12
 # }
 
 # Colors {
@@ -43,6 +47,10 @@ bindsym $mod+Shift+c kill
 # starta program launcher
 #bindsym $mod+r exec j4-dmenu-desktop --dmenu="dmenu -i -fn 'DejaVu Sans Mono-12' -nb \#073642 -sf \#FF0000 -sb \#073642 "
 bindsym $mod+r exec rofi -show run
+
+#lock
+bindsym Control+Mod1+Delete exec /home/erica/.bin/lock.sh
+bindsym $mod+Control+7 exec ~/.bin/monitor-switch
 
 # change focus
 bindsym $mod+h focus left
@@ -100,7 +108,7 @@ bindsym $mod+space focus mode_toggle
 # end bindings }
 
 # Workspaces {
-set $ws1 "1:"
+set $ws1 "1:" 
 set $ws2 "2:"
 set $ws3 "3:"
 set $ws4 "4:"
@@ -111,7 +119,18 @@ set $ws8 "8:"
 set $ws9 "9:"
 set $ws10 "10"
 
-workspace $ws1 output eDP-1-1
+workspace $ws1 output $DISPLAY1
+workspace $ws1 output $DISPLAY1
+workspace $ws2 output $DISPLAY1
+workspace $ws3 output $DISPLAY1
+workspace $ws4 output $DISPLAY1
+workspace $ws5 output $DISPLAY1
+workspace $ws6 output $DISPLAY1
+workspace $ws7 output $DISPLAY2
+workspace $ws8 output $DISPLAY2
+workspace $ws9 output $DISPLAY2
+workspace $ws10 output $DISPLAY2
+
 # switch to workspace
 bindsym $mod+1 workspace number $ws1
 bindsym $mod+2 workspace number $ws2
@@ -175,11 +194,12 @@ bindsym $mod+d mode "resize"
 
 # Bar config {
 bar {
-        status_command    /usr/bin/i3blocks -c ~/.config/i3blocks/config
+        #status_command    /usr/bin/i3blocks -c ~/.config/i3blocks/config
+	status_command /usr/bin/bumblebee-status -m task sensors nic load memory disk amixer battery date time -p time.format="%H:%M" -t solarized-powerline -p memory.format="{percent:02.01f}%" -p disk.format="{percent:02.1f}%" -p date.left-click='notify-week.sh' -p nic.exclude='lo,virbr,docker,vboxnet,veth,br' -t solarized-powerline
         i3bar_command     /usr/bin/i3bar
         position          top
         workspace_buttons yes
-        tray_output       none
+        tray_output       primary
         verbose           no
 
         font xft:Liberation Mono, Awesome 12
@@ -197,48 +217,61 @@ bar {
 
 # Multimedia keybindings {
 #
-bindsym XF86AudioMute         exec --no-startup-id pactl set-sink-mute 0 toggle
-bindsym XF86AudioLowerVolume  exec --no-startup-id pactl set-sink-volume 0 -5%
-bindsym XF86AudioRaiseVolume  exec --no-startup-id pactl set-sink-volume 0 +5%
+bindsym XF86AudioNext         exec --no-startup-id playerctl next
+bindsym XF86AudioPlay         exec --no-startup-id playerctl play-pause
+bindsym XF86AudioPrev         exec --no-startup-id playerctl previous
+bindsym XF86AudioMute         exec --no-startup-id amixer set Master toggle
+bindsym XF86AudioLowerVolume  exec --no-startup-id amixer set Master 5%-
+bindsym XF86AudioRaiseVolume  exec --no-startup-id amixer set Master 5%+
 bindsym XF86Search	      exec --no-startup-id $BROWSER https:///www.google.se; workspace $ws1
-bindsym XF86MonBrightnessUp   exec --no-startup-id xbacklight +10
-bindsym XF86MonBrightnessDown exec --no-startup-id xbacklight -7
-# }
-
-# Application starters {
-#
+bindsym XF86MonBrightnessUp   exec --no-startup-id light -A 10
+bindsym XF86MonBrightnessDown exec --no-startup-id light -U 10
+#bindsym XF86MonBrightnessUp   exec --no-startup-id xbacklight +100
+#bindsym XF86MonBrightnessDown exec --no-startup-id xbacklight -7
+for_window [class="(?i)google-chrome"] border none
 for_window [class="(?i)google-chrome"] border none
 for_window [class="(?i)chromium"] border none
 for_window [class="(?i)dwb"] border none
 for_window [class="(?i)mpv"] floating enable
-bindsym $mod+c exec firefox-developer-edition
+bindsym $mod+b exec $BROWSER
 bindsym $mod+Mod1+c exec "firefox --incognito"
 bindsym $mod+Shift+Return exec "urxvt -e ranger"
 bindsym $mod+a exec --no-startup-id "subl3"
+#bindsym $mod+b exec --no-startup-id "scrot"
 # }
 
 # Workspace assignments {
 #
 assign [class="(?i)google-chrome"] → $ws1
+assign [class="(?i)brave-browser"] → $ws1
 assign [class="(?i)chromium"] → $ws1
 assign [class="(?i)firefox"] → $ws1
+assign [class="(?i)jetbrains-idea"] → $ws2
 assign [class="(?i)jetbrains-idea" instance="(?i)sun-awt-X11-XFramePeer"] → $ws2
 assign [class="(?i)Atom"]→ $ws5
 assign [class="(?i)jetbrains-datagrip" instance="(?i)sun-awt-X11-XFramePeer"] → $ws7
 assign [class="(?i)Pidgin"] → $ws8
 assign [class="(?i)Spotify"] → $ws8
+assign [class="(?i)microsoft teams - preview"] → $ws8
+assign [class="(?i)hiri"] → $ws8
 assign [class="(?i)Skype"] → $ws9
 assign [class="(?i)Slack"] → $ws9
+# Move spotify since assignment doesn't work
+#
+for_window [class="Spotify"] move to workspace $ws8
 # }
 
 # Scratch-pads {
 #
-exec --no-startup-id urxvt -name scratchpad -geometry 130x30
+#exec --no-startup-id urxvt -name scratchpad -geometry 130x30
+exec_always flock -w1 ~/.config/i3/scratchpad/lockfile ~/.config/i3/scratchpad/perpetual_terminal.sh
 for_window [class="^URxvt$" instance="scratchpad"] border 1pixel; move scratchpad
+#for_window [class="^URxvt$" instance="scratchpad"] border 1pixel; move scratchpad
 #for_window [instance="urxvt_scratchpad"] floating enable; move scratchpad; scratchpad show; move position 865px 512px; move scratchpad
 bindsym $mod+s [class="URxvt" instance="scratchpad"] scratchpad show
-bindsym $mod+Shift+s [class="^URxvt$" instance="scratchpad"] border 1pixel; move scratchpad
+#bindsym $mod+Shift+s [class="^URxvt$" instance="scratchpad"] border 1pixel; move scratchpad
 # }
+
 
 #for_window [class="^Spotify$"] floating enable
 for_window [class="^Skype$"] floating disable

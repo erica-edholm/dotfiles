@@ -1,0 +1,4 @@
+#!/bin/zsh
+start-scratchpad
+#sleep 1
+move-scratchpad

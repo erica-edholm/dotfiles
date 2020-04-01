@@ -1,0 +1,8 @@
+noremap 0 ^ 
+set clipboard=unnamed
+#map ,, :action AceTargetAction<CR>
+set ignorecase
+set smartcase
+nmap gi :action GotoImplementation<CR>
+nmap gb :action Back<CR>
+nmap gf :action Forward<CR>

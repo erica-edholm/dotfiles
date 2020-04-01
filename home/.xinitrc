@@ -14,15 +14,14 @@ export GPG_AGENT_INFO SSH_AUTH_SOCK
 
 # Flush keyring and sudo password
 # xss-lock -- /home/eda/.bin/on-suspend.sh &
+xss-lock -- /home/erica/.bin/lock.sh &
 
 # Set background
 #sh /home/eda/.bin/random-bg.sh &
 
 
 # Make Capslock act as escape/control
-setxkbmap se
-setxkbmap se-coder -option 'lv3:caps_switch'
-xcape -e 'ISO_Level3_Shift=Escape'
+#setxkbmap se
 
 # Keyboard related settings
 xbindkeys
@@ -30,7 +29,7 @@ xsetroot -cursor_name left_ptr &
 xsetroot -solid "#073642"
 
 # Bind escape to capslock (easier vim usage)
-setxkbmap -option caps:escape
+setxkbmap se -option caps:escape
 
 # Keyboard repeat delay
 xset r rate 200 30
@@ -50,8 +49,8 @@ syndaemon -t -k -i 1.0 -d &
 xset +fp /usr/share/fonts/local
 xset fp rehash
 
-xrandr --setprovideroutputsource modesetting NVIDIA-0
+#xrandr --dpi 220
 xrandr --auto
 
-xrandr --dpi 220
 exec i3
+

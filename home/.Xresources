@@ -1,3 +1,5 @@
+#define DPI 168
+xterm.background: black
 xterm.foreground: white
 
 URxvt.loginshell: false
@@ -15,17 +17,19 @@ URxvt.url-select.launcher: open
 URxvt.url-select.underline: true
 URxvt.url-select.button: 1
 
-! "Hard" reset on ctrl-k
-!URxvt.keysym.C-k:   echo -ne '\\033c'\n
-
+URxvt.url-select.autocopy: on
 URxvt.keysym.M-u:   perl:url-select:select_next
+URxvt.keysym.M-c:   eval:selection_to_clipboard
 URxvt.keysym.M-v:   eval:paste_clipboard
 URxvt.keysym.M-V:   eval:paste_primary
-URxvt.keysym.M-c:   eval:selection_to_clipboard
-! TEST: http://www.google.com
-!
+URxvt.keysym.ISOLevel3-c:   eval:selection_to_clipboard
+URxvt.keysym.ISOLevel3-v:   eval:paste_clipboard
+URxvt.keysym.ISOLevel3-V:   eval:paste_primary
+URxvt.clipboard.autocopy:   true
+URxvt.clipboard.copycmd:    xclip -in -selection clipboard
+
 URxvt.scrollBar: off
-URxvt.saveLines: 10000
+URxvt.saveLines: 50000
 
 ! do not scroll with output
 URxvt*scrollTtyOutput: false
@@ -36,26 +40,19 @@ URxvt*scrollWithBuffer: true
 ! scroll back to the bottom on keypress
 URxvt*scrollTtyKeypress: true
 
-!#URxvt.depth: 32
-
-!URxvt.iconFile: /usr/share/icons/gnome/48x48/apps/terminal.png
-
 !-------------------------------------------------------------------------------
 !! Xft settings
 !!-------------------------------------------------------------------------------
 !
-Xft.dpi:                    180
-Xft.autohint:		    0
-Xft.lcdfilter:		    lcddefault
-Xft.hintstyle:              hintfull
-Xft.hinting:                1
-Xft.antialias:              1
+Xft.dpi:                    DPI
+Xft.antialias:              true
 Xft.rgba:                   rgb
+Xft.hinting:                true
+Xft.hintstyle:              hintslight
 
-URxvt.allow_bold:           true
-!URxvt.font: xft:Liberation Mono:size=12
-!URxvt.boldFont: xft:Liberation Mono:bold:size=12
-URxvt.font: xft:InputMono:size=11, xft:AwesomeFont:size=11
+URxvt.allow_bold:           false
+URxvt.font:                 xft:InputMono:size=13,xft:FontAwesome:size=10
+URxvt.boldFont:             xft:InputMono:bold:size=13,xft:FontAwesome:size=10
 
 ! Fix font space
 URxvt*letterSpace: -1
@@ -66,8 +63,6 @@ URxvt.cursorUnderline:      false
 
 ! ! Pointer
 URxvt.pointerBlank:         true
-!Xcursor*theme:		    xcursor-neutral
-Xcursor*size:		    48 
 
 ! Solarized color scheme for the X Window System
 !
@@ -115,7 +110,7 @@ Xcursor*size:		    48
 !# URxvt*background:            S_base03
 URxvt.intensityStyles: false
 URxvt*background:              S_base03
-URxvt*foreground:              S_base2
+URxvt*foreground:              S_base0
 !URxvt*fading:                  40
 URxvt*fadeColor:               S_base03
 URxvt*cursorColor:             S_base1
@@ -149,9 +144,11 @@ URxvt.colorUL:      #87afd7
 ! Tab completion
 rofi.kb-row-select: Tab
 rofi.kb-row-tab:    Control+space
-rofi.font:          mono 23
+rofi.dpi:           DPI
+rofi.font:          mono 20
 rofi.width:         25
 rofi.color-window: #fdf6e3, #fdf6e3, #eee8d5
 rofi.color-normal: #fdf6e3, #819396, #fdf6e3, #eee8d5, #819396
 rofi.color-active: #fdf6e3, #008ed4, #fdf6e3, #eee8d5, #008ed4
 rofi.color-urgent: #fdf6e3, #da4281, #fdf6e3, #eee8d5, #da4281
+
