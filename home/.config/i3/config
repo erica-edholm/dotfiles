@@ -229,10 +229,7 @@ hide_edge_borders smart
     exec --no-startup-id alacritty --class scratchpad --title scratchpad -d 120 50
 
     # Move it to scratchpad position 
-    for_window [class="^Alacritty$" instance="scratchpad"] border 1pixel; move scratchpad
-    #exec_always flock -w1 ~/.config/i3/scratchpad/lockfile ~/.config/i3/scratchpad/perpetual_terminal.sh
-    #exec --no-startup-id urxvt -name scratchpad -geometry 130x30
-    #for_window [class="^URxvt$" instance="scratchpad"] border 1pixel; move scratchpad
+    for_window [class="Alacritty" instance="scratchpad"] move window to scratchpad
 
 # }
 #

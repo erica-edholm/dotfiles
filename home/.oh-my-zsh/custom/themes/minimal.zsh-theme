@@ -148,6 +148,18 @@ function minimal_magic_enter {
     fi
 }
 
+function prepend-sudo() {
+   if [[ -z "$BUFFER" ]]; then
+     (( HISTNO -= 1 ))
+   fi
+   if [[ "$BUFFER" != su(do|)\ * ]]; then
+     BUFFER="sudo $BUFFER"
+     (( CURSOR += 5 ))
+   fi
+ }
+ zle -N prepend-sudo
+ bindkey "^[s" prepend-sudo
+
 # Apply Switches
 if [ "$MINIMAL_PROMPT" = "yes" ]; then
     # prompt redraw on vimode change

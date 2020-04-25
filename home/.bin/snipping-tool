@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
-img=$(mktemp '/tmp/screenshot-XXXXXXXXX.png')
-scrot -s -o $img
-xclip -selection clipboard -t image/png $img
-rm $img
+if [[ ! -z "$RUNNING_X" ]]; then 
+    img=$(mktemp '/tmp/screenshot-XXXXXXXXX.png')
+    scrot -s -o $img
+    xclip -selection clipboard -t image/png $img
+    rm $img
+else
+    grim -g "$(slurp)" -t png - | wl-copy -t image/png 
+fi
+

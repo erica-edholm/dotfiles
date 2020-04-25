@@ -49,10 +49,13 @@ syndaemon -t -k -i 1.0 -d &
 xset +fp /usr/share/fonts/local
 xset fp rehash
 
+export RUNNING_X=true
+
 #xrandr --dpi 220
 xrandr --auto
 
 nm-applet &
 
 exec i3
+
 

@@ -99,20 +99,6 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 
-# Inserts 'sudo ' at the beginning of the line.
-# # If current line is empty, insert sudo for the previous command.
-function prepend-sudo() {
-  if [[ -z "$BUFFER"  ]]; then
-      (( HISTNO -= 1  ))
-  fi
-  if [[ "$BUFFER" != su(do|)\ *  ]]; then
-      BUFFER="sudo $BUFFER"
-      (( CURSOR += 5  ))
-  fi
-}
-zle -N prepend-sudo
-bindkey "^[s" prepend-sudo
-
 # Git log formatting
 _git_log_medium_format='%C(bold)Commit: %C(reset)%C(green)%H%C(red)%d%n%C(bold)Author:%C(reset) %C(cyan)%an <%ae>%n%C(bold)Date:%C(reset)   %C(blue)%ai (%ar)%C(reset)%n%+B'
 _git_log_fullgraph_format='%C(green)%h%C(reset) %<|(50,trunc)%s %C(bold blue)<%an>%C(reset) %C(yellow)(%cd)%C(reset)%C(auto)%d%C(reset)%n'

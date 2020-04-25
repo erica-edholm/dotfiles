@@ -9,5 +9,6 @@ while true; do
 	# in any case, we try to reattach to the session, or, if that fails,
 	# create a new one.
 	#urxvt -name scratchpad -e $SHELL -c 'echo herp; xrdb -query; echo derp; $SHELL -i'
-    urxvt -name scratchpad
+    #urxvt -name scratchpad
+    alacritty --class scratchpad --title scratchpad -d 120 50
 done

@@ -1,1 +1,6 @@
-i3-msg 'exec --no-startup-id urxvt -name scratchpad'
+#!/bin/bash
+if [[ ! -z "$RUNNING_X" ]]; then 
+    i3-msg 'exec --no-startup-id alacritty --class scratchpad --title scratchpad -d 120 50'
+else
+    swaymsg 'exec --no-startup-id alacritty --class scratchpad --title scratchpad -d 120 50'
+fi

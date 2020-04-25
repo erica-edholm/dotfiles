@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+
+mapfile -t < <(find /sys/class/drm/card0/ -name "card0-DP*") dp_inputs
+declare docked=false
+declare counter=0
+
+
+set_docked_status() {
+	for output in "${dp_inputs[@]}"; do
+		op=$(<"${output}/status")
+		if [ "connected" == "${op}" ]; then
+			((counter++))
+		fi
+	done
+
+	if [ "${counter}" -ge 2 ]; then
+		docked=true
+	fi
+}
+
+send_notification() {
+	notify-send --urgency=low -t 5000 "DPI has been changed, restart your applications for it take effect."
+}
+
+update_xresources_dpi() {
+	local dpi="$1"
+	sed -i -E --follow-symlinks "s/^#define DPI.+/#define DPI ${dpi}/" ~/.Xresources
+}
+
+merge_xresources() {
+	xrdb -merge ~/.Xresources
+}
+
+main() {
+	set_docked_status
+
+	if [ "${docked}" == true ]; then
+		update_xresources_dpi 96
+		merge_xresources
+        xrandr --output DP1-2 --auto --primary --output DP2-2 --auto --right-of DP1-2 --output eDP1 --off
+        setxkbmap se -option caps:escape
+        i3-msg restart
+		send_notification
+	elif [ "${docked}" == false ] && [ "${counter}" -eq 1 ]; then
+		update_xresources_dpi 96
+		merge_xresources
+		xrandr --output eDP-1 --mode 1920x1080 --output DP-3 --auto --dpi 96
+        setxkbmap se -option caps:escape
+        i3-msg restart
+		send_notification
+	elif [ "${docked}" == false ] && [ "${counter}" -eq 0 ]; then
+		update_xresources_dpi 168
+		merge_xresources
+        xrandr --output eDP1 --auto --primary --mode 3840x2160 --output DP1-2 --off --output DP2-2 --off
+        setxkbmap se -option caps:escape
+        i3-msg restart
+		send_notification
+	fi
+}
+
+main
