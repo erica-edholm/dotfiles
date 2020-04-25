@@ -52,5 +52,7 @@ xset fp rehash
 #xrandr --dpi 220
 xrandr --auto
 
+nm-applet &
+
 exec i3
 

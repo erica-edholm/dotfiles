@@ -2,12 +2,26 @@
 #
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
+### Variables
+#
+# Logo key. Use Mod1 for Alt.
 set $mod Mod4
-
-set $DISPLAY1 DP1-2
-set $DISPLAY2 DP2-2
+# Home row direction keys, like vim
+set $left h
+set $down j
+set $up k
+set $right l
+# Monitors
+set $laptop eDP-1
+set $monitor1 DP1-2
+set $monitor2 DP2-2
+# Your preferred terminal emulator
+set $term alacritty
+# Your preferred application launcher
+bindsym $mod+d exec rofi -show run
 
 # Font {
+#
 #font xft:Source Code Pro for Poweline Regular 6
 #font xft:Droid Sans Mono 6
 font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
@@ -17,10 +31,6 @@ font pango:Awesome 12
 
 # Colors {
 # class                 border  backgr. text    indicator
-#client.focused          #b58900 #000000 #ffffff #2e9ef4
-#client.focused_inactive #333333 #ffffff #ffffff #484e50
-#client.unfocused        #333333 #222222 #888888 #292d2e
-#client.urgent           #dc322f #dc322f #fdf6e3 #900000
 client.focused             #4D679A   #b58900    #fdf6e3
 client.focused_inactive    #586e75   #657b83    #fdf6e3
 client.unfocused           #586e75   #002b36    #fdf6e3
@@ -30,142 +40,206 @@ client.urgent              #FF0000   #FF0000    #fdf6e3
 ## Window border style {
 ##---------------------
 new_window pixel 1
-new_float 1pixel
+new_float pixel 1
 hide_edge_borders smart
 # }
 
-# Keybindings {
-# Use Mouse+$mod to drag floating windows to their wanted position
-floating_modifier $mod
-
-# start a terminal
-bindsym $mod+Return exec urxvt
-
-# kill focused window
-bindsym $mod+Shift+c kill
-
-# starta program launcher
-#bindsym $mod+r exec j4-dmenu-desktop --dmenu="dmenu -i -fn 'DejaVu Sans Mono-12' -nb \#073642 -sf \#FF0000 -sb \#073642 "
-bindsym $mod+r exec rofi -show run
-
-#lock
-bindsym Control+Mod1+Delete exec /home/erica/.bin/lock.sh
-bindsym $mod+Control+7 exec ~/.bin/monitor-switch
-
-# change focus
-bindsym $mod+h focus left
-bindsym $mod+j focus down
-bindsym $mod+k focus up
-bindsym $mod+l focus right
-
-# alternatively, you can use the cursor keys:
-bindsym $mod+Left focus left
-bindsym $mod+Down focus down
-bindsym $mod+Up focus up
-bindsym $mod+Right focus right
-
-# move focused window
-bindsym $mod+Shift+h move left
-bindsym $mod+Shift+j move down
-bindsym $mod+Shift+k move up
-bindsym $mod+Shift+l move right
-
-# alternatively, you can use the cursor keys:
-bindsym $mod+Shift+Left move left
-bindsym $mod+Shift+Down move down
-bindsym $mod+Shift+Up move up
-bindsym $mod+Shift+Right move right
-
-bindsym $mod+Shift+greater move workspace to output right
-bindsym $mod+less move workspace to output left
-
-# split in horizontal orientation
-bindsym $mod+odiaeresis split h
-
-# split in vertical orientation
-bindsym $mod+v split v
-
-# enter fullscreen mode for the focused container
-bindsym $mod+f fullscreen
-
-# change container layout (stacked, tabbed, toggle split)
-#bindsym $mod+s layout stacking
-bindsym $mod+w layout tabbed
-bindsym $mod+e layout toggle split
-
-# toggle tiling / floating
-bindsym $mod+Shift+space floating toggle
-
-# change focus between tiling / floating windows
-bindsym $mod+space focus mode_toggle
-
-# focus the parent container
-#bindsym $mod+a focus parent
-
-# focus the child container
-#bindsym $mod+d focus child
+### Keybindings {
 #
+# Basics: 
+#
+    # Start a terminal
+    bindsym $mod+Return exec $term
+    
+    # Kill focused window
+    bindsym $mod+Shift+q kill
+    
+    # Use Mouse+$mod to drag floating windows to their wanted position
+    floating_modifier $mod
+    
+    # Reload the configuration file
+    bindsym $mod+Shift+c reload
+    
+    # Restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+    bindsym $mod+Shift+r restart
+
+    # Exit i3 (logs you out of your X session)
+    bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+    
+
+
+    # Lock
+    bindsym Control+Mod1+Delete exec /home/erica/.bin/lock.sh
+    bindsym $mod+Control+7 exec ~/.bin/monitor-switch
+#
+# Moving around:
+#
+
+    # Move your focus around
+    bindsym $mod+$left focus left
+    bindsym $mod+$down focus down
+    bindsym $mod+$up focus up
+    bindsym $mod+$right focus right
+    # Or use $mod+[up|down|left|right]
+    bindsym $mod+Left focus left
+    bindsym $mod+Down focus down
+    bindsym $mod+Up focus up
+    bindsym $mod+Right focus right
+
+    # Move the focused window with the same, but add Shift
+    bindsym $mod+Shift+$left move left
+    bindsym $mod+Shift+$down move down
+    bindsym $mod+Shift+$up move up
+    bindsym $mod+Shift+$right move right
+    # Ditto, with arrow kesy
+    bindsym $mod+Shift+Left move left
+    bindsym $mod+Shift+Down move down
+    bindsym $mod+Shift+Up move up
+    bindsym $mod+Shift+Right move right
+
+    # Move workspace to other outputs
+    bindsym $mod+Shift+greater move workspace to output right
+    bindsym $mod+less move workspace to output left
+
+    # Multimedia keybindings
+    bindsym XF86AudioNext         exec --no-startup-id playerctl next
+    bindsym XF86AudioPlay         exec --no-startup-id playerctl play-pause
+    bindsym XF86AudioPrev         exec --no-startup-id playerctl previous
+    bindsym XF86AudioMute         exec --no-startup-id amixer set Master toggle
+    bindsym XF86AudioLowerVolume  exec --no-startup-id amixer set Master 5%-
+    bindsym XF86AudioRaiseVolume  exec --no-startup-id amixer set Master 5%+
+    bindsym XF86Search	      exec --no-startup-id $BROWSER https:///www.google.se; workspace $ws1
+    bindsym XF86MonBrightnessUp   exec --no-startup-id light -A 10
+    bindsym XF86MonBrightnessDown exec --no-startup-id light -U 10
 # end bindings }
 
-# Workspaces {
-set $ws1 "1:" 
-set $ws2 "2:"
-set $ws3 "3:"
-set $ws4 "4:"
-set $ws5 "5:"
-set $ws6 "6:"
-set $ws7 "7:"
-set $ws8 "8:"
-set $ws9 "9:"
-set $ws10 "10"
+#
+# Workspaces: {
+#
+    set $ws1 "1:"
+    set $ws2 "2:"
+    set $ws3 "3:"
+    set $ws4 "4:"
+    set $ws5 "5:"
+    set $ws6 "6:"
+    set $ws7 "7:"
+    set $ws8 "8:"
+    set $ws9 "9:"
+    set $ws10 "10"
 
-workspace $ws1 output $DISPLAY1
-workspace $ws1 output $DISPLAY1
-workspace $ws2 output $DISPLAY1
-workspace $ws3 output $DISPLAY1
-workspace $ws4 output $DISPLAY1
-workspace $ws5 output $DISPLAY1
-workspace $ws6 output $DISPLAY1
-workspace $ws7 output $DISPLAY2
-workspace $ws8 output $DISPLAY2
-workspace $ws9 output $DISPLAY2
-workspace $ws10 output $DISPLAY2
+    # Switch to workspace
+    bindsym $mod+1 workspace number $ws1
+    bindsym $mod+2 workspace number $ws2
+    bindsym $mod+3 workspace number $ws3
+    bindsym $mod+4 workspace number $ws4
+    bindsym $mod+5 workspace number $ws5
+    bindsym $mod+6 workspace number $ws6
+    bindsym $mod+7 workspace number $ws7
+    bindsym $mod+8 workspace number $ws8
+    bindsym $mod+9 workspace number $ws9
+    bindsym $mod+0 workspace number $ws10
 
-# switch to workspace
-bindsym $mod+1 workspace number $ws1
-bindsym $mod+2 workspace number $ws2
-bindsym $mod+3 workspace number $ws3
-bindsym $mod+4 workspace number $ws4
-bindsym $mod+5 workspace number $ws5
-bindsym $mod+6 workspace number $ws6
-bindsym $mod+7 workspace number $ws7
-bindsym $mod+8 workspace number $ws8
-bindsym $mod+9 workspace number $ws9
-bindsym $mod+0 workspace number $ws10
+    # Move focused container to workspace
+    bindsym $mod+Shift+1 move container to workspace $ws1
+    bindsym $mod+Shift+2 move container to workspace $ws2
+    bindsym $mod+Shift+3 move container to workspace $ws3
+    bindsym $mod+Shift+4 move container to workspace $ws4
+    bindsym $mod+Shift+5 move container to workspace $ws5
+    bindsym $mod+Shift+6 move container to workspace $ws6
+    bindsym $mod+Shift+7 move container to workspace $ws7
+    bindsym $mod+Shift+8 move container to workspace $ws8
+    bindsym $mod+Shift+9 move container to workspace $ws9
+    bindsym $mod+Shift+0 move container to workspace $ws10
 
-# move focused container to workspace
-bindsym $mod+Shift+1 move container to workspace $ws1
-bindsym $mod+Shift+2 move container to workspace $ws2
-bindsym $mod+Shift+3 move container to workspace $ws3
-bindsym $mod+Shift+4 move container to workspace $ws4
-bindsym $mod+Shift+5 move container to workspace $ws5
-bindsym $mod+Shift+6 move container to workspace $ws6
-bindsym $mod+Shift+7 move container to workspace $ws7
-bindsym $mod+Shift+8 move container to workspace $ws8
-bindsym $mod+Shift+9 move container to workspace $ws9
-bindsym $mod+Shift+0 move container to workspace $ws10
+    # Assing workspace to specific monitor
+    workspace $ws1 output $DISPLAY1
+    workspace $ws1 output $DISPLAY1
+    workspace $ws2 output $DISPLAY1
+    workspace $ws3 output $DISPLAY1
+    workspace $ws4 output $DISPLAY1
+    workspace $ws5 output $DISPLAY1
+    workspace $ws6 output $DISPLAY1
+    workspace $ws7 output $DISPLAY2
+    workspace $ws8 output $DISPLAY2
+    workspace $ws9 output $DISPLAY2
+    workspace $ws10 output $DISPLAY2
+
+    # Workspace assignments
+    assign [class="(?i)google-chrome"] → $ws1
+    assign [class="(?i)brave-browser"] → $ws1
+    assign [class="(?i)chromium"] → $ws1
+    assign [class="(?i)firefox"] → $ws1
+    assign [class="(?i)jetbrains-idea"] → $ws2
+    assign [class="(?i)jetbrains-idea" instance="(?i)sun-awt-X11-XFramePeer"] → $ws2
+    assign [class="(?i)zoom"] → $ws4
+    assign [class="(?i)Atom"]→ $ws5
+    assign [class="(?i)jetbrains-datagrip" instance="(?i)sun-awt-X11-XFramePeer"] → $ws7
+    assign [class="(?i)Pidgin"] → $ws8
+    assign [class="(?i)Spotify"] → $ws8
+    assign [class="(?i)microsoft teams - preview"] → $ws8
+    assign [class="(?i)hiri"] → $ws8
+    assign [class="(?i)Skype"] → $ws9
+    assign [class="(?i)Slack"] → $ws9
+
 # }
 
-# i3 managemant {
-# reload the configuration file
-bindsym $mod+q reload
-# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
-bindsym $mod+Shift+q restart
-# exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
-# }
+#
+# Layout stuff: {
+#
 
-# resize window (you can also use the mouse for that) {
+    # You can "split" the current object of your focus with
+    # $mod+h or $mod+v, for horizontal and vertical splits
+    # respectively.
+    bindsym $mod+b split h
+    bindsym $mod+v split v
+
+    # Switch the current container between different layout styles
+    bindsym $mod+q layout stacking
+    bindsym $mod+w layout tabbed
+    bindsym $mod+e layout toggle split
+
+    # Make the current focus fullscreen
+    bindsym $mod+f fullscreen
+
+
+    # Toggle the current focus between tiling and floating mode
+    bindsym $mod+Shift+space floating toggle
+
+    # Swap focus between the tiling area and the floating area
+    bindsym $mod+space focus mode_toggle
+
+    # Move focus to the parent container
+    bindsym $mod+a focus parent
+    
+    # Move focus to the child container
+    #bindsym $mod+d focus child
+#
+# }
+#
+
+#
+# Scratchpad: {
+#
+    
+    # Show the next scratchpad window or hide the focused scratchpad window.
+    # If there are multiple scratchpad windows, this command cycles through them.
+    bindsym $mod+s [instance="scratchpad"] scratchpad show
+
+    # Start terminal
+    exec --no-startup-id alacritty --class scratchpad --title scratchpad -d 120 50
+
+    # Move it to scratchpad position 
+    for_window [class="^Alacritty$" instance="scratchpad"] border 1pixel; move scratchpad
+    #exec_always flock -w1 ~/.config/i3/scratchpad/lockfile ~/.config/i3/scratchpad/perpetual_terminal.sh
+    #exec --no-startup-id urxvt -name scratchpad -geometry 130x30
+    #for_window [class="^URxvt$" instance="scratchpad"] border 1pixel; move scratchpad
+
+# }
+#
+
+#
+# Resizing containers: {
+#
 mode "resize" {
         # These bindings trigger as soon as you enter the resize mode
 
@@ -173,34 +247,35 @@ mode "resize" {
         # Pressing right will grow the window’s width.
         # Pressing up will shrink the window’s height.
         # Pressing down will grow the window’s height.
-        bindsym h resize shrink width 10 px or 10 ppt
-        bindsym j resize grow height 10 px or 10 ppt
-        bindsym k resize shrink height 10 px or 10 ppt
-        bindsym l resize grow width 10 px or 10 ppt
+        bindsym $left shrink width 10 px or 10 ppt
+        bindsym $down resize grow height 10 px or 10 ppt
+        bindsym $up resize shrink height 10 px or 10 ppt
+        bindsym $right resize grow width 10 px or 10 ppt
 
-        # same bindings, but for the arrow keys
+        # Ditto, with arrow keys
         bindsym Left resize shrink width 10 px or 10 ppt
         bindsym Down resize grow height 10 px or 10 ppt
         bindsym Up resize shrink height 10 px or 10 ppt
         bindsym Right resize grow width 10 px or 10 ppt
 
-        # back to normal: Enter or Escape
+        # Return to default mode
         bindsym Return mode "default"
         bindsym Escape mode "default"
 }
-
-bindsym $mod+d mode "resize"
+bindsym $mod+r mode "resize"
 # }
 
-# Bar config {
+#
+# Status Bar: {
+#
 bar {
-        #status_command    /usr/bin/i3blocks -c ~/.config/i3blocks/config
-	status_command /usr/bin/bumblebee-status -m task sensors nic load memory disk amixer battery date time -p time.format="%H:%M" -t solarized-powerline -p memory.format="{percent:02.01f}%" -p disk.format="{percent:02.1f}%" -p date.left-click='notify-week.sh' -p nic.exclude='lo,virbr,docker,vboxnet,veth,br' -t solarized-powerline
-        i3bar_command     /usr/bin/i3bar
         position          top
-        workspace_buttons yes
         tray_output       primary
+        i3bar_command     /usr/bin/i3bar
+        workspace_buttons yes
         verbose           no
+
+	    status_command /usr/bin/bumblebee-status -m task sensors nic load memory disk amixer battery date time -p time.format="%H:%M" -t solarized-powerline -p memory.format="{percent:02.01f}%" -p disk.format="{percent:02.1f}%" -p date.left-click='notify-week.sh' -p nic.exclude='lo,virbr,docker,vboxnet,veth,br' -t solarized-powerline
 
         font xft:Liberation Mono, Awesome 12
         colors {
@@ -214,70 +289,45 @@ bar {
             urgent_workspace   #b58900  #dc322f      #fdf6e3
         }
 }
-
-# Multimedia keybindings {
-#
-bindsym XF86AudioNext         exec --no-startup-id playerctl next
-bindsym XF86AudioPlay         exec --no-startup-id playerctl play-pause
-bindsym XF86AudioPrev         exec --no-startup-id playerctl previous
-bindsym XF86AudioMute         exec --no-startup-id amixer set Master toggle
-bindsym XF86AudioLowerVolume  exec --no-startup-id amixer set Master 5%-
-bindsym XF86AudioRaiseVolume  exec --no-startup-id amixer set Master 5%+
-bindsym XF86Search	      exec --no-startup-id $BROWSER https:///www.google.se; workspace $ws1
-bindsym XF86MonBrightnessUp   exec --no-startup-id light -A 10
-bindsym XF86MonBrightnessDown exec --no-startup-id light -U 10
-#bindsym XF86MonBrightnessUp   exec --no-startup-id xbacklight +100
-#bindsym XF86MonBrightnessDown exec --no-startup-id xbacklight -7
-for_window [class="(?i)google-chrome"] border none
-for_window [class="(?i)google-chrome"] border none
-for_window [class="(?i)chromium"] border none
-for_window [class="(?i)dwb"] border none
-for_window [class="(?i)mpv"] floating enable
-bindsym $mod+b exec $BROWSER
-bindsym $mod+Mod1+c exec "firefox --incognito"
-bindsym $mod+Shift+Return exec "urxvt -e ranger"
-bindsym $mod+a exec --no-startup-id "subl3"
-#bindsym $mod+b exec --no-startup-id "scrot"
 # }
 
-# Workspace assignments {
 #
-assign [class="(?i)google-chrome"] → $ws1
-assign [class="(?i)brave-browser"] → $ws1
-assign [class="(?i)chromium"] → $ws1
-assign [class="(?i)firefox"] → $ws1
-assign [class="(?i)jetbrains-idea"] → $ws2
-assign [class="(?i)jetbrains-idea" instance="(?i)sun-awt-X11-XFramePeer"] → $ws2
-assign [class="(?i)Atom"]→ $ws5
-assign [class="(?i)jetbrains-datagrip" instance="(?i)sun-awt-X11-XFramePeer"] → $ws7
-assign [class="(?i)Pidgin"] → $ws8
-assign [class="(?i)Spotify"] → $ws8
-assign [class="(?i)microsoft teams - preview"] → $ws8
-assign [class="(?i)hiri"] → $ws8
-assign [class="(?i)Skype"] → $ws9
-assign [class="(?i)Slack"] → $ws9
-# Move spotify since assignment doesn't work
+# Application specific config {
 #
-for_window [class="Spotify"] move to workspace $ws8
+    for_window [class="(?i)google-chrome"] border none
+    for_window [class="(?i)chromium"] border none
+    for_window [class="(?i)dwb"] border none
+    for_window [class="(?i)mpv"] floating enable
+
+    # Post-start workspace assignment (probably due to something wrong)
+    for_window [class="Spotify"] move to workspace $ws8
+    
+    # Float Firefox preferences window.
+    for_window [instance="^Toplevel"] floating enable
+    
+    # Disable floating for spotfy
+    for_window [class="^Skype$"] floating disable
+    
+    # Make intellij not lose focus on popup dialogs
+    for_window [class="^jetbrains-.+" window_type=dialog] focus
+    for_window [class="^jetbrains-.+" title="win0"] floating enable
+    for_window [class="^jetbrains-.+" title=".+IDEA"] floating disable
+    for_window [class="^jetbrains-.+" title=".+DataGrip"] floating disable
+
 # }
 
-# Scratch-pads {
 #
-#exec --no-startup-id urxvt -name scratchpad -geometry 130x30
-exec_always flock -w1 ~/.config/i3/scratchpad/lockfile ~/.config/i3/scratchpad/perpetual_terminal.sh
-for_window [class="^URxvt$" instance="scratchpad"] border 1pixel; move scratchpad
-#for_window [class="^URxvt$" instance="scratchpad"] border 1pixel; move scratchpad
-#for_window [instance="urxvt_scratchpad"] floating enable; move scratchpad; scratchpad show; move position 865px 512px; move scratchpad
-bindsym $mod+s [class="URxvt" instance="scratchpad"] scratchpad show
-#bindsym $mod+Shift+s [class="^URxvt$" instance="scratchpad"] border 1pixel; move scratchpad
+# Start apps: {
+    bindsym $mod+c exec $BROWSER
+    bindsym $mod+Mod1+c exec "$BROWSER --incognito"
+    bindsym $mod+Shift+Return exec "$term -e ranger"
+
+    bindsym Print exec ~/.bin/snipping-tool
+
 # }
+#
 
 
-#for_window [class="^Spotify$"] floating enable
-for_window [class="^Skype$"] floating disable
-
-# Float Firefox preferences window.
-for_window [instance="^Toplevel"] floating enable
 
 
 # Gaps settings
