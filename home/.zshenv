@@ -1,7 +1,7 @@
 export BROWSER=firefox
 export EDITOR=vim
 export SYSTEMD_EDITOR=vim
-export PATH="/home/erica/.bin:$PATH"
+export PATH="/home/erica/.bin:/home/erica/.apps:$PATH"
 #export GDK_SCALE=2
 #export GDK_DPI_SCALE=0.5
 
