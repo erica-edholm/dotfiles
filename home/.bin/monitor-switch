@@ -3,7 +3,15 @@
 mapfile -t < <(find /sys/class/drm/card0/ -name "card0-DP*") dp_inputs
 declare docked=false
 declare counter=0
+declare monitor1=DP-1-1
+declare monitor2=DP-2-2
 
+get_monitor_ids() {
+    readarray -t monitors  < <(xrandr | grep -w 'connected' | grep -v 'eD' | sort | awk '{print $1}')
+    laptop=$(xrandr | grep 'eD' | awk '{print $1}')
+    monitor1="${monitors[0]}"
+    monitor2="${monitors[1]}"
+}
 
 set_docked_status() {
 	for output in "${dp_inputs[@]}"; do
@@ -31,31 +39,37 @@ merge_xresources() {
 	xrdb -merge ~/.Xresources
 }
 
+update_screen_layout() {
+  local docked="$1"
+  if [ "${docked}" == true ]; then
+        xrandr --output "${monitor1}" --auto --primary --output "${monitor2}" --auto --right-of "${monitor1}" --output "${laptop}" --off
+        xinput disable "AT Translated Set 2 keyboard"
+  else
+        xrandr --output "${laptop}" --auto --primary
+        xinput enable "AT Translated Set 2 keyboard"
+  fi
+
+}
+
 main() {
+  local dpi=168
+  get_monitor_ids
 	set_docked_status
 
 	if [ "${docked}" == true ]; then
-		update_xresources_dpi 96
-		merge_xresources
-        xrandr --output DP1-2 --auto --primary --output DP2-2 --auto --right-of DP1-2 --output eDP1 --off
-        setxkbmap se -option caps:escape
-        i3-msg restart
-		send_notification
-	elif [ "${docked}" == false ] && [ "${counter}" -eq 1 ]; then
-		update_xresources_dpi 96
-		merge_xresources
-		xrandr --output eDP-1 --mode 1920x1080 --output DP-3 --auto --dpi 96
-        setxkbmap se -option caps:escape
-        i3-msg restart
-		send_notification
-	elif [ "${docked}" == false ] && [ "${counter}" -eq 0 ]; then
-		update_xresources_dpi 168
-		merge_xresources
-        xrandr --output eDP1 --auto --primary --mode 3840x2160 --output DP1-2 --off --output DP2-2 --off
-        setxkbmap se -option caps:escape
-        i3-msg restart
-		send_notification
-	fi
+	  dpi=96
+  else
+    dpi=168
+  fi
+
+  update_xresources_dpi "$dpi"
+  update_screen_layout "$docked"
+  merge_xresources
+  setxkbmap se -option caps:escape
+  xrandr --dpi "$dpi"
+  i3-msg restart
+  send_notification
+
 }
 
 main
