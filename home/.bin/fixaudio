@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+headPhonesId=$(pacmd list-cards | grep -B5 bluez | grep index: | awk '{print $2}')
+pacmd set-card-profile ${headPhonesId} a2dp_sink
+

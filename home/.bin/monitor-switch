@@ -1,63 +1,79 @@
-#!/usr/bin/env bash
+#!/usr/bin/zsh
 
-mapfile -t < <(find /sys/class/drm/card0/ -name "card0-DP*") dp_inputs
+#IFS=$'\n'
+dp_inputs=()
+while read -r line; do dp_inputs+=("$line"); done < <(find /sys/class/drm/card0/ -name "card0-DP*")
 declare docked=false
+declare dvi=false
 declare counter=0
-declare monitor1=DP-1-1
-declare monitor2=DP-2-2
+declare laptop=eDP-1
+declare monitor1=DP-2-2-8
+declare monitor2=DP-1-2-8
 
 get_monitor_ids() {
-    readarray -t monitors  < <(xrandr | grep -w 'connected' | grep -v 'eD' | sort | awk '{print $1}')
-    laptop=$(xrandr | grep 'eD' | awk '{print $1}')
-    monitor1="${monitors[0]}"
-    monitor2="${monitors[1]}"
+  monitors=()
+  while read -r line; do monitors+=("$line"); done < <(xrandr | grep -w 'connected' | grep -v 'eD' | awk '{print $1}')
+  laptop=$(xrandr | grep -w 'connected' | grep 'eD' | awk '{print $1}')
+  monitor1="${monitors[1]}"
+  monitor2="${monitors[2]}"
 }
 
 set_docked_status() {
-	for output in "${dp_inputs[@]}"; do
-		op=$(<"${output}/status")
-		if [ "connected" == "${op}" ]; then
-			((counter++))
-		fi
-	done
+  for output in "${dp_inputs[@]}"; do
+    op=$(<"${output}/status")
+    if [ "connected" = "${op}" ]; then
+      ((counter++))
+    fi
+  done
 
-	if [ "${counter}" -ge 2 ]; then
-		docked=true
-	fi
+  if [ "${counter}" -ge 2 ]; then
+    docked=true
+  fi
+  dvi_monitor=$(xrandr | grep 'DVI' | grep 'connected')
+  if [[ -n $dvi_monitor ]]; then
+    docked=true
+    dvi=true
+  fi
+
 }
 
 send_notification() {
-	notify-send --urgency=low -t 5000 "DPI has been changed, restart your applications for it take effect."
+  notify-send --urgency=low -t 5000 "DPI has been changed, restart your applications for it take effect."
 }
 
 update_xresources_dpi() {
-	local dpi="$1"
-	sed -i -E --follow-symlinks "s/^#define DPI.+/#define DPI ${dpi}/" ~/.Xresources
+  local dpi="$1"
+  sed -i -E --follow-symlinks "s/^#define DPI.+/#define DPI ${dpi}/" ~/.Xresources
 }
 
 merge_xresources() {
-	xrdb -merge ~/.Xresources
+  xrdb -merge ~/.Xresources
 }
 
 update_screen_layout() {
   local docked="$1"
-  if [ "${docked}" == true ]; then
-        xrandr --output "${monitor1}" --auto --primary --output "${monitor2}" --auto --right-of "${monitor1}" --output "${laptop}" --off
-        xinput disable "AT Translated Set 2 keyboard"
+  echo "docked: $docked"
+  echo "dvi: $dvi"
+  if [ "${docked}" = true ] && [ "${dvi}" = false ]; then
+    xrandr --output "${monitor1}" --auto --primary --output "${monitor2}" --auto --left-of "${monitor1}" --output "${laptop}" --off
+    #xinput disable "AT Translated Set 2 keyboard"
+  elif [ "${dvi}" = true ]; then
+    xrandr --output DVI-I-2-1 --auto --primary --output "${laptop}" --auto --left-of DVI-I-2-1
+    #xinput enable "AT Translated Set 2 keyboard"
   else
-        xrandr --output "${laptop}" --auto --primary
-        xinput enable "AT Translated Set 2 keyboard"
+    xrandr --output "${laptop}" --auto --primary
+    #xinput enable "AT Translated Set 2 keyboard"
   fi
 
 }
 
 main() {
   local dpi=168
-  get_monitor_ids
-	set_docked_status
+  #get_monitor_ids
+  set_docked_status
 
-	if [ "${docked}" == true ]; then
-	  dpi=96
+  if [ "${docked}" = true ]; then
+    dpi=96
   else
     dpi=168
   fi
@@ -65,11 +81,10 @@ main() {
   update_xresources_dpi "$dpi"
   update_screen_layout "$docked"
   merge_xresources
-  setxkbmap se -option caps:escape
+  setxkbmap se -variant nodeadkeys -option caps:escape
   xrandr --dpi "$dpi"
   i3-msg restart
   send_notification
-
 }
 
 main

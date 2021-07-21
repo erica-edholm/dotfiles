@@ -11,8 +11,8 @@ set $up k
 set $right l
 # Monitors
 set $laptop eDP-1
-set $monitor1 DP-5
-set $monitor2 DP-8
+set $monitor1 "Dell Inc. DELL U2715H GH85D7BD0T3S"
+set $monitor2 "Dell Inc. DELL U2715H GH85D686043S"
 # Your preferred terminal emulator
 set $term alacritty
 # Your preferred application launcher
@@ -357,3 +357,9 @@ bar {
     bindsym Print exec ~/.bin/snipping-tool
 
 include /etc/sway/config.d/*
+
+#
+# Autostart 
+#
+exec nm-applet --indicator
+#export WLR_DRM_NO_MODIFIERS=1

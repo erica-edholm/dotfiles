@@ -1,0 +1,13 @@
+1. To get Vendor and ProductId
+$ lsusb | grep SteelSeries
+Bus 001 Device 008: ID 1038:1294 SteelSeries ApS Arctis Pro Wireless
+Bus 001 Device 006: ID 1038:1290 SteelSeries ApS Arctis Pro Wireless
+
+2. To check which profile is activated
+$ less /usr/lib/udev/rules.d/90-pipewire-alsa.rules
+ATTRS{idVendor}=="1038", ATTRS{idProduct}=="1294", ENV{PULSE_PROFILE_SET}="steelseries-arctis-usb-audio.conf"
+ATTRS{idVendor}=="1038", ATTRS{idProduct}=="1290", ENV{PULSE_PROFILE_SET}="steelseries-arctis-usb-audio.conf"
+
+3. Configuration can be found in:
+$ cd /usr/share/pulseaudio/alsa-mixer/profile-sets/
+

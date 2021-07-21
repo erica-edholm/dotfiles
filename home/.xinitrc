@@ -29,7 +29,7 @@ xsetroot -cursor_name left_ptr &
 xsetroot -solid "#073642"
 
 # Bind escape to capslock (easier vim usage)
-setxkbmap se -option caps:escape
+setxkbmap se nodeadkeys
 
 # Keyboard repeat delay
 xset r rate 200 30
@@ -55,7 +55,6 @@ export RUNNING_X=true
 xrandr --auto
 
 nm-applet &
-
 exec i3
 
 

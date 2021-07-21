@@ -160,6 +160,18 @@ function prepend-sudo() {
  zle -N prepend-sudo
  bindkey "^[s" prepend-sudo
 
+ pasteinit() {
+       OLD_SELF_INSERT=${${(s.:.)widgets[self-insert]}[2,3]}
+         zle -N self-insert url-quote-magic # I wonder if you'd need `.url-quote-magic`?
+ }
+
+pastefinish() {
+      zle -N self-insert $OLD_SELF_INSERT
+      
+}
+zstyle :bracketed-paste-magic paste-init pasteinit
+zstyle :bracketed-paste-magic paste-finish pastefinish
+
 # Apply Switches
 if [ "$MINIMAL_PROMPT" = "yes" ]; then
     # prompt redraw on vimode change

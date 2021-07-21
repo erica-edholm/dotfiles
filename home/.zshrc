@@ -68,7 +68,7 @@ ZSH_THEME="minimal"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-syntax-highlighting)
+plugins=(git zsh-syntax-highlighting zsh-autosuggestions node npm kubectl)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -98,14 +98,17 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+eval $(minikube -p minikube docker-env)
+
+# Bindkeys
+bindkey "^[[5~" history-beginning-search-backward
+bindkey "^[[6~" history-beginning-search-forward
 
 # Git log formatting
 _git_log_medium_format='%C(bold)Commit: %C(reset)%C(green)%H%C(red)%d%n%C(bold)Author:%C(reset) %C(cyan)%an <%ae>%n%C(bold)Date:%C(reset)   %C(blue)%ai (%ar)%C(reset)%n%+B'
 _git_log_fullgraph_format='%C(green)%h%C(reset) %<|(50,trunc)%s %C(bold blue)<%an>%C(reset) %C(yellow)(%cd)%C(reset)%C(auto)%d%C(reset)%n'
 
 alias ll='ls --group-directories-first --color=auto -la'
-alias mci='mvn clean install'
-
 
 # Git aliases
 alias gs='git status'
@@ -120,10 +123,27 @@ alias glG='git log --topo-order --all --graph --pretty=format"${_git_log_fullgra
 alias gcan='git commit --amend --no-edit'
 alias gri='git rebase -i'
 alias gcha='cd ~/code && ./checkout_all.sh'
+alias gsd='git switch develop'
+alias gsm='git switch master'
+alias gsl='git switch -'
+alias gsw='git switch'
+alias gswc='git switch'
+alias gpr='git fetch -p && for branch in $(git branch -vv | grep ": gone]" | awk '"'"'{print $1}'"'"'); do git branch -D $branch; done'
+#Fetch authors for branches
+alias gbau='git fetch -p && git for-each-ref --format="%(color:cyan)%(authordate:format:%m/%d/%Y %I:%M %p)    %(align:25,left)%(color:yellow)%(authorname)%(end) %(color:reset)%(refname:strip=3)" --sort=authordate refs/remotes'
 
 # Mvn aliases
-alias mci='mvn clean install'
-alias mcv='mvn clean verify'
+function lmvn {
+    if [ ! -f mvnw ]; 
+    then 
+        mvn $@
+    else 
+        ./mvnw $@
+    fi
+}
+alias mci='lmvn clean install'
+alias mcv='lmvn clean verify'
+alias mcd='lmvn clean install -Pdockerbuild'
 
 # Other aliases
 alias week='date "+%V"'
@@ -131,5 +151,18 @@ alias shutdown='systemctl poweroff'
 alias reboot='systemctl reboot'
 alias lock='loginctl lock-session'
 alias dum2='du -h -S ~/.m2/repository | sort --human-numeric-sort -r | head -n 15'
+alias fixsound='pacmd set-card-profile 5 a2dp_sink'
+alias localportforward='sudo setcap CAP_NET_BIND_SERVICE=+eip /usr/bin/kubectl;kubectl port-forward service/nginx-nginx-ingress-controller 80:80 443:443 -n local'
+alias rc='find-cursor --repeat 0 --follow --distance 1 --line-width 16 --size 10 --color red'
 
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="/home/erica/.sdkman"
+[[ -s "/home/erica/.sdkman/bin/sdkman-init.sh" ]] && source "/home/erica/.sdkman/bin/sdkman-init.sh"
+#[[ /usr/bin/kubectl ]] && source <(kubectl completion zsh)
 
+_dev-tools() {
+  eval $(env COMMANDLINE="${words[1,$CURRENT]}" _DEV_TOOLS_COMPLETE=complete-zsh  dev-tools)
+}
+if [[ "$(basename -- ${(%):-%x})" != "_dev-tools" ]]; then
+  compdef _dev-tools dev-tools
+fi

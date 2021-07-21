@@ -13,8 +13,11 @@ set $up k
 set $right l
 # Monitors
 set $laptop eDP-1
-set $monitor1 DP1-2
-set $monitor2 DP2-2
+set $monitor1 DP-2-2-8
+set $monitor2 DP-1-2-8
+#set $monitor1 DP-1-2
+#set $monitor2 DP-2-2
+#set $monitor1 DVI-I-2-1
 # Your preferred terminal emulator
 set $term alacritty
 # Your preferred application launcher
@@ -23,8 +26,8 @@ bindsym $mod+d exec rofi -show run
 # Font {
 #
 #font xft:Source Code Pro for Poweline Regular 6
-#font xft:Droid Sans Mono 6
-font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
+font xft:Droid Sans Mono 11
+#font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
 font pango:InputMono 11
 font pango:Awesome 12
 # }
@@ -51,6 +54,9 @@ hide_edge_borders smart
     # Start a terminal
     bindsym $mod+Return exec $term
     
+    # Start emoji-picker
+    bindsym Control+Mod1+e exec emoji-picker
+
     # Kill focused window
     bindsym $mod+Shift+q kill
     
@@ -120,8 +126,8 @@ hide_edge_borders smart
     set $ws2 "2:"
     set $ws3 "3:"
     set $ws4 "4:"
-    set $ws5 "5:"
-    set $ws6 "6:"
+    set $ws5 "5:"
+    set $ws6 "6:"
     set $ws7 "7:"
     set $ws8 "8:"
     set $ws9 "9:"
@@ -152,31 +158,32 @@ hide_edge_borders smart
     bindsym $mod+Shift+0 move container to workspace $ws10
 
     # Assing workspace to specific monitor
-    workspace $ws1 output $DISPLAY1
-    workspace $ws1 output $DISPLAY1
-    workspace $ws2 output $DISPLAY1
-    workspace $ws3 output $DISPLAY1
-    workspace $ws4 output $DISPLAY1
-    workspace $ws5 output $DISPLAY1
-    workspace $ws6 output $DISPLAY1
-    workspace $ws7 output $DISPLAY2
-    workspace $ws8 output $DISPLAY2
-    workspace $ws9 output $DISPLAY2
-    workspace $ws10 output $DISPLAY2
+    workspace $ws1 output $monitor1
+    workspace $ws1 output $monitor1
+    workspace $ws2 output $monitor1
+    workspace $ws3 output $monitor1
+    workspace $ws4 output $monitor1
+    workspace $ws5 output $monitor1
+    workspace $ws6 output $monitor2
+    workspace $ws7 output $monitor2
+    workspace $ws8 output $monitor2
+    workspace $ws9 output $monitor2
+    workspace $ws10 output $monitor2
 
     # Workspace assignments
     assign [class="(?i)google-chrome"] → $ws1
     assign [class="(?i)brave-browser"] → $ws1
     assign [class="(?i)chromium"] → $ws1
     assign [class="(?i)firefox"] → $ws1
-    assign [class="(?i)jetbrains-idea"] → $ws2
-    assign [class="(?i)jetbrains-idea" instance="(?i)sun-awt-X11-XFramePeer"] → $ws2
+    assign [class="(?i)jetbrains"] → $ws2
+    assign [class="(?i)insomnia"] → $ws4
     assign [class="(?i)zoom"] → $ws4
+    assign [class="(?i)lens"]→ $ws5
     assign [class="(?i)Atom"]→ $ws5
-    assign [class="(?i)jetbrains-datagrip" instance="(?i)sun-awt-X11-XFramePeer"] → $ws7
+    assign [class="(?i)microsoft teams - preview"] → $ws6
+    assign [class="(?i)robo3t"] → $ws7
     assign [class="(?i)Pidgin"] → $ws8
     assign [class="(?i)Spotify"] → $ws8
-    assign [class="(?i)microsoft teams - preview"] → $ws8
     assign [class="(?i)hiri"] → $ws8
     assign [class="(?i)Skype"] → $ws9
     assign [class="(?i)Slack"] → $ws9
@@ -226,7 +233,7 @@ hide_edge_borders smart
     bindsym $mod+s [instance="scratchpad"] scratchpad show
 
     # Start terminal
-    exec --no-startup-id alacritty --class scratchpad --title scratchpad -d 120 50
+    exec --no-startup-id alacritty --class scratchpad --title scratchpad
 
     # Move it to scratchpad position 
     for_window [class="Alacritty" instance="scratchpad"] move window to scratchpad
@@ -272,7 +279,7 @@ bar {
         workspace_buttons yes
         verbose           no
 
-	    status_command /usr/bin/bumblebee-status -m task sensors nic load memory disk amixer battery date time -p time.format="%H:%M" -t solarized-powerline -p memory.format="{percent:02.01f}%" -p disk.format="{percent:02.1f}%" -p date.left-click='notify-week.sh' -p nic.exclude='lo,virbr,docker,vboxnet,veth,br' -t solarized-powerline
+	    status_command /usr/bin/bumblebee-status -m task sensors2 nic load memory disk amixer battery date time -p time.format="%H:%M" -t solarized-powerline -p memory.format="{percent:02.01f}%" -p disk.format="{percent:02.1f}%" -p date.left-click='notify-week.sh' -p nic.exclude='lo,virbr,docker,vboxnet,veth,br' -t solarized-powerline -p sensors2.chip_field_include="coretemp-isa-0000.temp1"
 
         font xft:Liberation Mono, Awesome 12
         colors {
@@ -310,6 +317,9 @@ bar {
     for_window [class="^jetbrains-.+" title="win0"] floating enable
     for_window [class="^jetbrains-.+" title=".+IDEA"] floating disable
     for_window [class="^jetbrains-.+" title=".+DataGrip"] floating disable
+    for_window [title="Microsoft Teams Notification"] floating enable
+    for_window [class="emote"] floating enable
+    no_focus [title="Microsoft Teams Notification"]
 
 # }
 
@@ -321,6 +331,7 @@ bar {
 
     bindsym Print exec ~/.bin/snipping-tool
 
+    exec ~/.bin/monitor-switch
 # }
 #
 

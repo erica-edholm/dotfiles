@@ -1,6 +1,6 @@
 #!/bin/bash
 if [[ ! -z "$RUNNING_X" ]]; then 
-    i3-msg 'exec --no-startup-id alacritty --class scratchpad --title scratchpad -d 120 50'
+    i3-msg 'exec --no-startup-id alacritty --class scratchpad --title scratchpad'
 else
-    swaymsg 'exec --no-startup-id alacritty --class scratchpad --title scratchpad -d 120 50'
+    swaymsg 'exec --no-startup-id alacritty --class scratchpad --title scratchpad'
 fi

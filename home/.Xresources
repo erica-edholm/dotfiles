@@ -51,7 +51,7 @@ Xft.hinting:                true
 Xft.hintstyle:              hintslight
 
 URxvt.allow_bold:           false
-URxvt.font:                 xft:InputMono:size=13,xft:FontAwesome:size=10
+URxvt.font:                 xft:Droid Sans:size=13,xft:InputMono:size=13,xft:FontAwesome:size=10
 URxvt.boldFont:             xft:InputMono:bold:size=13,xft:FontAwesome:size=10
 
 ! Fix font space

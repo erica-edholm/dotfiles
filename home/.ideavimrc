@@ -2,7 +2,9 @@ noremap 0 ^
 set clipboard=unnamed
 #map ,, :action AceTargetAction<CR>
 set ignorecase
+set scrolloff=999
 set smartcase
 nmap gi :action GotoImplementation<CR>
 nmap gb :action Back<CR>
 nmap gf :action Forward<CR>
+set clipboard+=ideaput
