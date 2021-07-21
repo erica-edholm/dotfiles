@@ -147,8 +147,8 @@ alias mcd='lmvn clean install -Pdockerbuild'
 
 # Other aliases
 alias week='date "+%V"'
-alias shutdown='systemctl poweroff'
-alias reboot='systemctl reboot'
+alias shutdown='sudo systemctl poweroff'
+alias reboot='sudo systemctl reboot'
 alias lock='loginctl lock-session'
 alias dum2='du -h -S ~/.m2/repository | sort --human-numeric-sort -r | head -n 15'
 alias fixsound='pacmd set-card-profile 5 a2dp_sink'

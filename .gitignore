@@ -1,0 +1,7 @@
+home/.config/*
+!home/.config/alacritty
+!home/.config/dunst
+!home/.config/i3
+!home/.config/ranger
+!home/.config/sublime-merge
+!home/.config/sway
