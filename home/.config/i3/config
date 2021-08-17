@@ -13,8 +13,8 @@ set $up k
 set $right l
 # Monitors
 set $laptop eDP-1
-set $monitor1 DP-2-2-8
-set $monitor2 DP-1-2-8
+set $monitor1 DP-3-2-8
+set $monitor2 DP-2-2-8
 #set $monitor1 DP-1-2
 #set $monitor2 DP-2-2
 #set $monitor1 DVI-I-2-1

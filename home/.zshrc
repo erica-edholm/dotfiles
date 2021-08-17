@@ -98,7 +98,11 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-eval $(minikube -p minikube docker-env)
+#if type minikube > /dev/null; then
+#    if minikube status | grep -q Running; then
+#        eval $(minikube -p minikube docker-env)
+#    fi
+#fi
 
 # Bindkeys
 bindkey "^[[5~" history-beginning-search-backward

@@ -18,8 +18,8 @@ set $term alacritty
 # Your preferred application launcher
 # Note: pass the final command to swaymsg so that the resulting window can be opened
 # on the original workspace that the command was run on.
-#set $menu dmenu_path | dmenu | xargs swaymsg exec --
-set $menu rofi -show run
+set $menu dmenu_path | dmenu | xargs swaymsg exec --
+#set $menu rofi -show run
 
 ### Font
 #
@@ -88,7 +88,7 @@ exec swayidle -w \
 # Read `man 5 sway-input` for more information about this section.
 input * {
     xkb_layout se
-    xkb_options caps:swapescape
+    #xkb_options caps:swapescape
     
     tap enabled
     dwt enabled
@@ -272,7 +272,7 @@ input * {
     bindsym $mod+s scratchpad show
 
     for_window [app_id="scratchpad"] border pixel 1; move scratchpad
-    exec --no-startup-id alacritty --class scratchpad --title scratchpad -d 120 50
+    exec --no-startup-id alacritty --class scratchpad --title scratchpad 
     #exec --no-startup-id urxvt -name scratchpad -geometry 130x30
  
 #

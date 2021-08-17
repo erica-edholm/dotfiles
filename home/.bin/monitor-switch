@@ -7,8 +7,8 @@ declare docked=false
 declare dvi=false
 declare counter=0
 declare laptop=eDP-1
-declare monitor1=DP-2-2-8
-declare monitor2=DP-1-2-8
+declare monitor1=DP-3-2-8
+declare monitor2=DP-2-2-8
 
 get_monitor_ids() {
   monitors=()
