@@ -13,14 +13,25 @@
 
 # Suspend dunst and lock, then resume dunst when unlocked.
 pkill -u $USER -USR1 dunst
-i3lock -n -i /home/erica/.config/i3/lockscreen.png \
-    --inside-color=373445ff --ring-color=ffffffff --line-uses-inside \
-    --keyhl-color=d23c3dff --bshl-color=d23c3dff --separator-color=00000000 \
-    --insidever-color=fecf4dff --insidewrong-color=d23c3dff \
-    --ringver-color=ffffffff --ringwrong-color=ffffffff --ind-pos="x+86:y+1003" \
-    --radius=15 --verif-text="" --wrong-text=""
-pkill -u $USER -USR2 dunst
+if [[ ! -z "$RUNNING_X" ]]; then
+    i3lock -n -i /home/erica/.config/i3/lockscreen.png \
+        --inside-color=373445ff --ring-color=ffffffff --line-uses-inside \
+        --keyhl-color=d23c3dff --bshl-color=d23c3dff --separator-color=00000000 \
+        --insidever-color=fecf4dff --insidewrong-color=d23c3dff \
+        --ringver-color=ffffffff --ringwrong-color=ffffffff --ind-pos="x+86:y+1003" \
+        --radius=15 --verif-text="" --wrong-text=""
 
+else
+    swaylock -n -i /home/erica/.config/i3/lockscreen.png \
+        --ring-color ffffffff \
+        --key-hl-color d23c3dff \
+        --line-color 00000000 \
+        --inside-color fecf4dff \
+        --separator-color 00000000 \
+        --grace 2 \
+        --fade-in 0.2
+fi
+pkill -u $USER -USR2 dunst
 # Revert compton's config changes.
 #sleep 0.2
 #dbus-send --print-reply --dest=com.github.chjj.compton.${DISPLAY/:/_} / \

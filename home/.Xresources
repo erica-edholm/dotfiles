@@ -1,4 +1,4 @@
-#define DPI 168
+#define DPI 96
 xterm.background: black
 xterm.foreground: white
 

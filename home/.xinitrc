@@ -53,6 +53,7 @@ xset +fp /usr/share/fonts/local
 xset fp rehash
 
 export RUNNING_X=true
+dunst &
 
 #xrandr --dpi 220
 xrandr --auto

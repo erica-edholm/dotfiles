@@ -11,18 +11,23 @@ set $up k
 set $right l
 # Monitors
 set $laptop eDP-1
-set $monitor1 "Dell Inc. DELL U2715H GH85D7BD0T3S"
-set $monitor2 "Dell Inc. DELL U2715H GH85D686043S"
+set $monitor1 "Dell Inc. DELL U2715H GH85D73R0EHS"
+set $monitor2 "Dell Inc. DELL U2715H GH85D8871P3L"
 # Your preferred terminal emulator
 set $term alacritty
 # Your preferred application launcher
 # Note: pass the final command to swaymsg so that the resulting window can be opened
 # on the original workspace that the command was run on.
-set $menu dmenu_path | dmenu | xargs swaymsg exec --
+#set $menu dmenu_path | dmenu | xargs swaymsg exec --
+#set $menu bemenu-run
+set $menu albert toggle
 #set $menu rofi -show run
 
 ### Font
 #
+#font xft:Droid Sans 11
+#font pango:InputMono 11
+#font pango:Awesome 12
 ### Colors
 #
 client.focused             #4D679A   #b58900    #fdf6e3
@@ -44,10 +49,11 @@ output * bg #002B36 solid_color
 output $laptop scale 2
 #output $laptop pos 0 0 res 3200x1800
 #output $laptop scale_filter smart
-output $monitor1 pos 0 0 res 2560x1440@60Hz
-output $monitor2 pos 2560 0 res 2560x1440@60Hz
+output $monitor2 pos 0 0 res 2560x1440@60Hz
+output $monitor1 pos 2560 0 res 2560x1440@60Hz
 output $monitor1 scale 1
 output $monitor2 scale 1
+#output $laptop disable
 bindswitch --reload lid:on output $laptop disable
 bindswitch --reload lid:off output $laptop enable 
 
@@ -86,9 +92,15 @@ exec swayidle -w \
 #
 # You can get the names of your inputs by running: swaymsg -t get_inputs
 # Read `man 5 sway-input` for more information about this section.
-input * {
+input type:touchpad {
+    natural_scroll enabled
+    tap enabled
+
+}
+input type:keyboard {
     xkb_layout se
-    #xkb_options caps:swapescape
+    xkb_variant nodeadkeys
+    xkb_options caps:escape
     
     tap enabled
     dwt enabled
@@ -97,6 +109,9 @@ input * {
 
 }
 
+set $locker 'swaylock -n --daemonize --image="/home/erica/.config/i3/lockscreen.png" '
+#set $locker 'swaylock --daemonize --image="~/.config/i3/lockscreen.png" --scaling center --color=073642'
+
 
 ### Key bindings
 #
@@ -104,12 +119,46 @@ input * {
 #
     # Start a terminal
     bindsym $mod+Return exec $term
+
+    # Start emoji-picker
+    bindsym Control+Mod1+e exec emote
     
     # Kill focused window
     bindsym $mod+Shift+q kill
     
-    # Start your launcher
+    # Start application launcher
     bindsym $mod+d exec $menu
+
+    # Start browser
+    bindsym $mod+c exec $BROWSER
+
+    # Start browser incognito
+    bindsym $mod+Mod1+c exec "$BROWSER --incognito"
+
+    # Open filemanager
+    bindsym $mod+Shift+Return exec "$term -e ranger"
+
+    # Take printscreen
+    bindsym Print exec ~/.bin/snipping-tool
+
+    set $mode_system System: (l) lock, (e) exit sway, (c) reload conf, (S) suspend, (r) reboot, (s) shutdown, (R) reboot to BIOS, (Ctrl+R) Boot selection
+    mode "$mode_system" {
+        bindsym l exec $locker, mode "default"
+        bindsym e exit
+        bindsym c reload
+        bindsym Shift+s exec systemctl suspend, mode "default"
+        bindsym r exec systemctl reboot, mode "default"
+        bindsym s exec systemctl poweroff -i, mode "default"
+        bindsym Shift+r exec systemctl reboot --firmware-setup, mode "default"
+        bindsym Control+Shift+r exec systemctl reboot --boot-loader-menu=10, mode "default"
+
+        # return to default mode
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+Shift+e mode "default"
+    }
+    bindsym $mod+Shift+e mode "$mode_system"
+
     
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -122,11 +171,12 @@ input * {
     bindsym $mod+Shift+c reload
     
     # Exit sway (logs you out of your Wayland session)
-    bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+    #bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
     
     # Lock computer with Ctrl+Alt+Del
-    bindsym Control+Mod1+Delete exec swaylock -f -c 000000
+    bindsym Control+Mod1+Delete exec /home/erica/.bin/lock.sh
 #
+
 # Moving around:
 #
     # Move your focus around
@@ -157,8 +207,11 @@ input * {
 
     # Multimedia keybindings
     bindsym XF86AudioNext         exec --no-startup-id playerctl next
+    bindsym $mod+Shift+n          exec --no-startup-id playerctl next
     bindsym XF86AudioPlay         exec --no-startup-id playerctl play-pause
+    bindsym $mod+Shift+g          exec --no-startup-id playerctl play-pause
     bindsym XF86AudioPrev         exec --no-startup-id playerctl previous
+    bindsym $mod+Shift+b          exec --no-startup-id playerctl previous
     bindsym XF86AudioMute         exec --no-startup-id amixer set Master toggle
     bindsym XF86AudioLowerVolume  exec --no-startup-id amixer set Master 5%-
     bindsym XF86AudioRaiseVolume  exec --no-startup-id amixer set Master 5%+
@@ -173,8 +226,8 @@ input * {
     set $ws2 "2:"
     set $ws3 "3:"
     set $ws4 "4:"
-    set $ws5 "5:"
-    set $ws6 "6:"
+    set $ws5 "5:"
+    set $ws6 "6:"
     set $ws7 "7:"
     set $ws8 "8:"
     set $ws9 "9:"
@@ -210,7 +263,7 @@ input * {
     workspace $ws3 output $monitor1 $laptop 
     workspace $ws4 output $monitor1 $laptop 
     workspace $ws5 output $monitor1 $laptop 
-    workspace $ws6 output $monitor1 $laptop 
+    workspace $ws6 output $monitor2 $laptop 
     workspace $ws7 output $monitor2 $laptop 
     workspace $ws8 output $monitor2 $laptop 
     workspace $ws9 output $monitor2 $laptop 
@@ -221,17 +274,18 @@ input * {
     assign [class="(?i)brave-browser"] → $ws1
     assign [class="(?i)chromium"] → $ws1
     assign [app_id="firefox"] → $ws1
-    assign [class="(?i)jetbrains-idea"] → $ws2
-    assign [class="(?i)jetbrains-idea"] → $ws2
+    assign [class="(?i)jetbrains"] → $ws2
     assign [class="(?i)jetbrains-idea" instance="(?i)sun-awt-X11-XFramePeer"] → $ws2
+    assign [class="(?i)zoom"] → $ws4
+    assign [class="(?i)lens"] → $ws5
     assign [class="(?i)Atom"]→ $ws5
-    assign [class="(?i)jetbrains-datagrip" instance="(?i)sun-awt-X11-XFramePeer"] → $ws7
-    assign [class="(?i)Pidgin"] → $ws8
+    assign [class="(?i)microsoft teams - preview"] → $ws6
+    assign [app_id="chromium"] → $ws6
+    assign [class="(?i)robo3t"] → $ws7
     assign [class="(?i)Spotify"] → $ws8
-    assign [class="(?i)microsoft teams - preview"] → $ws8
     assign [class="(?i)hiri"] → $ws8
     assign [class="(?i)Skype"] → $ws9
-    assign [class="(?i)Slack"] → $ws9
+    assign [app_id="Slack"] → $ws9
 
 #
 # Layout stuff:
@@ -310,7 +364,7 @@ bar {
 
     # When the status_command prints a new line to stdout, swaybar updates.
     # The default just shows the current date and time.
-    status_command /usr/bin/bumblebee-status -m task sensors nic load memory disk amixer battery date time -p time.format="%H:%M:%S" -p memory.format="{percent:02.01f}%" -p disk.format="{percent:02.1f}%" -p date.left-click='notify-week.sh' -p nic.exclude='lo,virbr,docker,vboxnet,veth,br' -t solarized-powerline
+    status_command /usr/bin/bumblebee-status -m task sensors nic load memory disk amixer battery date time -p time.format="%H:%M:%S" -t solarized-powerline -p memory.format="{percent:02.01f}%" -p disk.format="{percent:02.1f}%" -p date.left-click='notify-week.sh' -p nic.exclude='lo,virbr,docker,vboxnet,veth,br' -t solarized-powerline -p sensors2.chip_field_include="coretemp-isa-0000.temp1"
 
     colors {
         background #002b36
@@ -336,30 +390,31 @@ bar {
 
     # Post-start workspace assignment (probably due to something wrong)
     for_window [class="(?i)idea"] move container to workspace $ws2
+    for_window [class="(?i)Spotify"] move container to workspace $ws8
 
     # Float Firefox preferences window.
     for_window [instance="^Toplevel"] floating enable
     #
     # Make intellij not lose focus on popup dialogs
-    #for_window [class="^jetbrains-.+" window_type=dialog] focus
-    #for_window [class="^jetbrains-.+" title="win0"] floating enable
-    #for_window [class="^jetbrains-.+" title=".+IDEA"] floating disable
-    #for_window [class="^jetbrains-.+" title=".+DataGrip"] floating disable
+    for_window [class="^jetbrains-.+" window_type=dialog] focus
+    for_window [class="^jetbrains-.+" title="win0"] floating enable
+    for_window [class="^jetbrains-.+" title=".+IDEA"] floating disable
+    for_window [class="^jetbrains-.+" title=".+DataGrip"] floating disable
+    for_window [title="Microsoft Teams Notification"] floating enable
+    for_window [class="emote"] floating enable
+    no_focus [title="Microsoft Teams Notifiation"] 
 
 #
 # Start apps
 #
-
-    bindsym $mod+c exec $BROWSER
-    bindsym $mod+Mod1+c exec "$BROWSER --incognito"
-    bindsym $mod+Shift+Return exec "urxvt -e ranger"
-    bindsym Shift+Print exec grim -o $(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | .name') ~/screenshots/$(date +'%Y-%m-%d-%H%M%S_grim.png')
-    bindsym Print exec ~/.bin/snipping-tool
 
 include /etc/sway/config.d/*
 
 #
 # Autostart 
 #
+exec albert
 exec nm-applet --indicator
+#export XDG_CURRENT_DESKTOP="${XDG_CURRENT_DESKTOP:-sway}"
+#export MOZ_ENABLE_WAYLAND=1
 #export WLR_DRM_NO_MODIFIERS=1

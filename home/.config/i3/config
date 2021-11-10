@@ -13,15 +13,17 @@ set $up k
 set $right l
 # Monitors
 set $laptop eDP-1
+#set $monitor1 DVI-I-3-2
+#set $monitor2 DVI-I-2-1
 set $monitor1 DP-3-2-8
 set $monitor2 DP-2-2-8
-#set $monitor1 DP-1-2
-#set $monitor2 DP-2-2
 #set $monitor1 DVI-I-2-1
 # Your preferred terminal emulator
 set $term alacritty
 # Your preferred application launcher
-bindsym $mod+d exec rofi -show run
+#bindsym $mod+d exec rofi -show run
+#set $menu rofi -show run
+set $menu albert toggle
 
 # Font {
 #
@@ -60,6 +62,9 @@ hide_edge_borders smart
     # Kill focused window
     bindsym $mod+Shift+q kill
     
+    # Start application launcher
+    bindsym $mod+d exec $menu
+    
     # Use Mouse+$mod to drag floating windows to their wanted position
     floating_modifier $mod
     
@@ -70,13 +75,44 @@ hide_edge_borders smart
     bindsym $mod+Shift+r restart
 
     # Exit i3 (logs you out of your X session)
-    bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
-    
+    #bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+   set $mode_system System: (l) lock, (e) exit i3, (c) reload conf, (S) suspend, (r) reboot, (s) shutdown, (R) reboot to BIOS, (Ctrl+R) Boot selection
+   mode "$mode_system" {
+       bindsym l exec $locker, mode "default"
+       bindsym e exit
+       bindsym c reload
+       bindsym Shift+s exec systemctl suspend, mode "default"
+       bindsym r exec systemctl reboot, mode "default"
+       bindsym s exec systemctl poweroff -i, mode "default"
+       bindsym Shift+r exec systemctl reboot --firmware-setup, mode "default"
+       bindsym Control+Shift+r exec systemctl reboot --boot-loader-menu=10, mode "default"
+
+       # return to default mode
+       bindsym Return mode "default"
+       bindsym Escape mode "default"
+       bindsym $mod+Shift+e mode "default"
+    }
+    bindsym $mod+Shift+e mode "$mode_system"
 
 
     # Lock
     bindsym Control+Mod1+Delete exec /home/erica/.bin/lock.sh
+
     bindsym $mod+Control+7 exec ~/.bin/monitor-switch
+
+    # Start browser
+    bindsym $mod+c exec $BROWSER
+
+    # Start browser incognito
+    bindsym $mod+Mod1+c exec "$BROWSER --incognito"
+
+    # Open filemanager
+    bindsym $mod+Shift+Return exec "$term -e ranger"
+
+    # Take printscreen
+    bindsym Print exec ~/.bin/snipping-tool
+
+#
 #
 # Moving around:
 #
@@ -109,8 +145,11 @@ hide_edge_borders smart
 
     # Multimedia keybindings
     bindsym XF86AudioNext         exec --no-startup-id playerctl next
+    bindsym $mod+Shift+n          exec --no-startup-id playerctl next
     bindsym XF86AudioPlay         exec --no-startup-id playerctl play-pause
+    bindsym $mod+Shift+g          exec --no-startup-id playerctl play-pause
     bindsym XF86AudioPrev         exec --no-startup-id playerctl previous
+    bindsym $mod+Shift+b          exec --no-startup-id playerctl previous
     bindsym XF86AudioMute         exec --no-startup-id amixer set Master toggle
     bindsym XF86AudioLowerVolume  exec --no-startup-id amixer set Master 5%-
     bindsym XF86AudioRaiseVolume  exec --no-startup-id amixer set Master 5%+
@@ -178,6 +217,7 @@ hide_edge_borders smart
     assign [class="(?i)jetbrains"] → $ws2
     assign [class="(?i)insomnia"] → $ws4
     assign [class="(?i)zoom"] → $ws4
+    assign [class="(?i)notion-app"] → $ws4
     assign [class="(?i)lens"]→ $ws5
     assign [class="(?i)Atom"]→ $ws5
     assign [class="(?i)microsoft teams - preview"] → $ws6
@@ -325,13 +365,9 @@ bar {
 
 #
 # Start apps: {
-    bindsym $mod+c exec $BROWSER
-    bindsym $mod+Mod1+c exec "$BROWSER --incognito"
-    bindsym $mod+Shift+Return exec "$term -e ranger"
-
-    bindsym Print exec ~/.bin/snipping-tool
 
     exec ~/.bin/monitor-switch
+    exec albert
 # }
 #
 
