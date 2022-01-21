@@ -8,7 +8,8 @@ export ZSH="/home/erica/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="minimal"
+#ZSH_THEME="cdimascio-lambda"
+ZSH_THEME="lambda-mod"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -68,7 +69,7 @@ ZSH_THEME="minimal"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-syntax-highlighting zsh-autosuggestions node npm kubectl)
+plugins=(git zsh-syntax-highlighting zsh-autosuggestions sudo)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -103,10 +104,12 @@ source $ZSH/oh-my-zsh.sh
 #        eval $(minikube -p minikube docker-env)
 #    fi
 #fi
+#eval $(minikube -p minikube docker-env)
 
 # Bindkeys
 bindkey "^[[5~" history-beginning-search-backward
 bindkey "^[[6~" history-beginning-search-forward
+bindkey "^[s" sudo-command-line
 
 # Git log formatting
 _git_log_medium_format='%C(bold)Commit: %C(reset)%C(green)%H%C(red)%d%n%C(bold)Author:%C(reset) %C(cyan)%an <%ae>%n%C(bold)Date:%C(reset)   %C(blue)%ai (%ar)%C(reset)%n%+B'
@@ -115,23 +118,17 @@ _git_log_fullgraph_format='%C(green)%h%C(reset) %<|(50,trunc)%s %C(bold blue)<%a
 alias ll='ls --group-directories-first --color=auto -la'
 
 # Git aliases
-alias gs='git status'
-alias gco='git checkout'
-alias gc='git commit'
-alias ga='git add'
 alias gd='git icdiff'
-alias gl='git log --topo-order --pretty=format:"${_git_log_medium_format}"'
-alias gpl='git pull --rebase'
-alias gpsh='git push'
+alias glg='git log --topo-order --pretty=format:"${_git_log_medium_format}"'
+alias gl='git pull --rebase'
 alias glG='git log --topo-order --all --graph --pretty=format"${_git_log_fullgraph_format}" --date=relative'
 alias gcan='git commit --amend --no-edit'
 alias gri='git rebase -i'
 alias gcha='cd ~/code && ./checkout_all.sh'
 alias gsd='git switch develop'
-alias gsm='git switch master'
+alias gsm='git switch $(git_main_branch)'
 alias gsl='git switch -'
 alias gsw='git switch'
-alias gswc='git switch'
 alias gpr='git fetch -p && for branch in $(git branch -vv | grep ": gone]" | awk '"'"'{print $1}'"'"'); do git branch -D $branch; done'
 #Fetch authors for branches
 alias gbau='git fetch -p && git for-each-ref --format="%(color:cyan)%(authordate:format:%m/%d/%Y %I:%M %p)    %(align:25,left)%(color:yellow)%(authorname)%(end) %(color:reset)%(refname:strip=3)" --sort=authordate refs/remotes'

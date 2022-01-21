@@ -1,4 +1,4 @@
-export BROWSER=firefox
+export BROWSER=brave
 export EDITOR=vim
 export SYSTEMD_EDITOR=vim
 export PATH="/home/erica/.bin:/home/erica/.apps:/home/erica/.local/bin:/home/erica/go/bin:/home/erica/.gem:$PATH"
